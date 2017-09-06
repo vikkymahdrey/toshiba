@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
+	version="2.0">
+	<persistence-unit name="AppPU" transaction-type="RESOURCE_LOCAL">
+		<provider>org.hibernate.ejb.HibernatePersistence</provider>
+		<non-jta-data-source>java:comp/env/jdbc/AppDB</non-jta-data-source>
+		<class>com.team.app.domain.AdminUser</class>
+		<class>com.team.app.domain.Role</class>
+		<class>com.team.app.domain.TblDeviceInfo</class>
+		<class>com.team.app.domain.TblToshibaKeyConfig</class>
+		<class>com.team.app.domain.TblUserInfo</class>
+		<class>com.team.app.domain.Application</class>
+		<class>com.team.app.domain.ApplicationUser</class>
+		<class>com.team.app.domain.ChannelConfiguration</class>
+		<class>com.team.app.domain.DownlinkQueue</class>
+		<class>com.team.app.domain.ExtraChannel</class>
+		<class>com.team.app.domain.Gateway</class>
+		<class>com.team.app.domain.GatewayN</class>
+		<class>com.team.app.domain.GatewayStat</class>
+		<class>com.team.app.domain.GorpMigration</class>
+		<class>com.team.app.domain.GorpMigrationsN</class>
+		<class>com.team.app.domain.JwtToken</class>
+		<class>com.team.app.domain.Node</class>
+		<class>com.team.app.domain.Organization</class>
+		<class>com.team.app.domain.OrganizationUser</class>
+		<class>com.team.app.domain.User</class>
+		
+
+		<properties>
+			<property name="hibernate.show_sql" value="true" />
+			<property name="hibernate.format_sql" value="true" />
+			<property name="hibernate.hbm2ddl.auto" value="update" />
+			<property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect" />
+		 	<property name="hibernate.cache.use_query_cache" value="false" />
+			<property name="hibernate.cache.use_second_level_cache" value="false" />
+			<property name="hibernate.connection.isolation" value="2"/>
+		</properties>
+	</persistence-unit>
+</persistence>
