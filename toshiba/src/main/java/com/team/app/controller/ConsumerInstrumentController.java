@@ -9,9 +9,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import org.eclipse.paho.client.mqttv3.MqttClient;
-import org.eclipse.paho.client.mqttv3.MqttException;
-import org.eclipse.paho.client.mqttv3.MqttMessage;
+import javax.persistence.Column;
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -26,8 +25,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.team.app.config.MqttIntrf;
 import com.team.app.constant.AppConstants;
 import com.team.app.domain.JwtToken;
+import com.team.app.domain.LoraFrame;
 import com.team.app.domain.User;
 import com.team.app.dto.ResponseDto;
 import com.team.app.dto.Status;
@@ -37,6 +38,7 @@ import com.team.app.exception.AtAppException;
 import com.team.app.logger.AtLogger;
 import com.team.app.service.AtappCommonService;
 import com.team.app.service.ConsumerInstrumentService;
+import com.team.app.service.MqttFramesService;
 import com.team.app.utils.JWTKeyGenerator;
 import com.team.app.utils.JsonUtil;
 
@@ -55,12 +57,19 @@ public class ConsumerInstrumentController {
 	
 	@Autowired
 	private AtappCommonService atAppCommonService;
+	
+	@Autowired
+	private MqttFramesService  mqttFramesService;
+	
+	@Autowired
+	private MqttIntrf mqttIntrf;
 		
 	
 	private static final AtLogger logger = AtLogger.getLogger(ConsumerInstrumentController.class);
 	
 	static {
 	    //for testing only
+		
 	    javax.net.ssl.HttpsURLConnection.setDefaultHostnameVerifier(
 	    new javax.net.ssl.HostnameVerifier(){
 
@@ -183,7 +192,7 @@ public class ConsumerInstrumentController {
 
 		JSONObject obj=null;
 		ResponseEntity<String> responseEntity = null;
-		HttpHeaders httpHeaders =null;
+		//HttpHeaders httpHeaders =null;
 					
 		ResponseDto dto=null;
 					dto=new ResponseDto();
@@ -281,13 +290,13 @@ public class ConsumerInstrumentController {
     						  dto.setStatusDesc("Successfully login");
     						  dto.setJwt(jwt);
     						  String resp = JsonUtil.objToJson(dto);
-    						  responseEntity = new ResponseEntity<String>(resp,httpHeaders,HttpStatus.OK);
+    						  responseEntity = new ResponseEntity<String>(resp,HttpStatus.OK);
     					 }else{
     						// httpHeaders=new HttpHeaders();  
     						//httpHeaders.add(AppConstants.HTTP_HEADER_JWT_TOKEN,null);
     						dto.setStatusDesc("JWT not generated");
     						String resp = JsonUtil.objToJson(dto);
-    						responseEntity = new ResponseEntity<String>(resp,httpHeaders,HttpStatus.NO_CONTENT);
+    						responseEntity = new ResponseEntity<String>(resp,HttpStatus.NO_CONTENT);
     					 }
     					
     					
@@ -654,26 +663,169 @@ public class ConsumerInstrumentController {
 	
 	
 	
-	@RequestMapping(value = "/test1", method = {RequestMethod.GET,RequestMethod.POST}, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/init", method = {RequestMethod.GET,RequestMethod.POST}, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<String> test1MqttHandler() {
 		logger.info("Inside /test");
 		ResponseEntity<String> responseEntity = null;		
 		try{							
-			 
-			MqttClient client = new MqttClient("tcp://localhost:1883", MqttClient.generateClientId());
-			client.connect();
-			MqttMessage message = new MqttMessage();
-			message.setPayload("Hello world from Java".getBytes());
-			client.publish("iot_data", message);
-			client.disconnect();
+			mqttIntrf.doDemo();
 			responseEntity = new ResponseEntity<String>("Connected", HttpStatus.OK);
-		 } catch(MqttException me) {
+		 }catch(Exception me){
 			 logger.error("Error in /mqtt testing",me);
+			 me.printStackTrace();
 	     }
 		return responseEntity;
 		
 	}
 	
+	
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "/deviceInfo", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<String> deviceInfoHandler(@RequestHeader(value = AppConstants.HTTP_HEADER_JWT_TOKEN) String jwt){
+		logger.info("Inside in /deviceInfo ");
+		ResponseEntity<String> responseEntity = null;
+		Status status=null;
+				status=new Status();
+		try{			
+			
+			logger.debug("JWT TOken",jwt);
+			if( jwt!=null && !jwt.isEmpty()){    					
+				List<LoraFrame> frames=mqttFramesService.getFrames();
+				JSONArray arr=null;
+						arr=new JSONArray();
+				if(frames!=null && !frames.isEmpty()){
+					LoraFrame frm=frames.get(frames.size()-1);
+						JSONObject result=null;
+								result=new JSONObject();
+						JSONObject json=null;
+							json=new JSONObject();
+							json.put("id", frm.getId());
+							json.put("led1", frm.getLed1());
+							json.put("led2", frm.getLed2());
+							json.put("led3", frm.getLed3());
+							json.put("led4", frm.getLed4());
+							json.put("humidity", frm.getHumidity());
+							json.put("pressure", frm.getPressure());
+							json.put("temperature", frm.getTemperature());
+							json.put("nodeName", frm.getNodeName());
+							json.put("loraId", frm.getLoraId());
+							json.put("deviceId", frm.getDeviceId());
+							
+							try{
+								json.put("date", String.valueOf(new SimpleDateFormat("yyyy-MM-dd hh:mm:ss")
+									.parse(frm.getCreatedAt().toString()).getTime()));
+							}catch(Exception e){
+								logger.error(e);
+							}
+						
+							arr.add(json);
+							result.put("devices", arr);
+						
+					String resp = JsonUtil.objToJson(result);
+					responseEntity = new ResponseEntity<String>(resp,HttpStatus.OK);
+				}else{
+					status.setStatusDesc("No frames found");
+	    			status.setStatusCode(HttpStatus.NO_CONTENT.toString());
+					String resp = JsonUtil.objToJson(status);
+	    			responseEntity = new ResponseEntity<String>(resp,HttpStatus.NO_CONTENT);
+				}
+    		    					
+    		}else{
+    			status.setStatusDesc("Jwt token is empty");
+    			status.setStatusCode(HttpStatus.NOT_ACCEPTABLE.toString());
+				String resp = JsonUtil.objToJson(status);
+    			responseEntity = new ResponseEntity<String>(resp,HttpStatus.NOT_ACCEPTABLE);
+    		}
+    		 		  				   				
+			
+		}catch(Exception e){
+			logger.error("IN contoller catch block /deviceInfo",e);
+			responseEntity = new ResponseEntity<String>(e.toString(), HttpStatus.BAD_REQUEST);
+		}
+		return responseEntity;
+	}
+	
+	
+	
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "/getDeviceInfo", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<String> getDeviceValHandler(@RequestBody String received,@RequestHeader(value = AppConstants.HTTP_HEADER_JWT_TOKEN) String jwt){
+		logger.info("Inside in /getDeviceInfo ");
+		ResponseEntity<String> responseEntity = null;
+		Status status=null;
+				status=new Status();
+				JSONObject obj=null;	
+
+				try{		
+						obj=new JSONObject();
+						obj=(JSONObject)new JSONParser().parse(received);
+				}catch(Exception e){
+					return new ResponseEntity<String>("Empty received body /mobileLoginAuth", HttpStatus.BAD_REQUEST);
+				}
+				
+		try{			
+
+			if( obj.get("loraId").toString()!=null && !obj.get("loraId").toString().isEmpty() 
+    				&& obj.get("deviceId").toString()!=null && !obj.get("deviceId").toString().isEmpty() ){
+    					
+    				logger.debug("loraId for /getDeviceInfo :",obj.get("loraId").toString());
+    				logger.debug("deviceId for /getDeviceInfo :",obj.get("deviceId").toString());
+			
+			logger.debug("JWT TOken",jwt);
+			if( jwt!=null && !jwt.isEmpty()){    					
+				List<LoraFrame> frames=mqttFramesService.getFramesByLoraIdAndDevId( obj.get("loraId").toString(),obj.get("deviceId").toString());
+				JSONArray arr=null;
+						arr=new JSONArray();
+				if(frames!=null && !frames.isEmpty()){
+					JSONObject result=null;
+						result=new JSONObject();
+					for(LoraFrame frm: frames){
+						JSONObject json=null;
+							json=new JSONObject();
+							json.put("id", frm.getId());
+							json.put("humidity", frm.getHumidity());
+							json.put("pressure", frm.getPressure());
+							json.put("temperature", frm.getTemperature());
+														
+							try{
+								json.put("date", String.valueOf(new SimpleDateFormat("yyyy-MM-dd hh:mm:ss")
+									.parse(frm.getCreatedAt().toString()).getTime()));
+							}catch(Exception e){
+								logger.error(e);
+							}
+						
+							arr.add(json);
+					}	
+							result.put("devices", arr);
+						
+					String resp = JsonUtil.objToJson(result);
+					responseEntity = new ResponseEntity<String>(resp,HttpStatus.OK);
+				}else{
+					status.setStatusDesc("No frames found");
+	    			status.setStatusCode(HttpStatus.NO_CONTENT.toString());
+					String resp = JsonUtil.objToJson(status);
+	    			responseEntity = new ResponseEntity<String>(resp,HttpStatus.NO_CONTENT);
+				}
+    		    					
+    		}else{
+    			status.setStatusDesc("Jwt token is empty");
+    			status.setStatusCode(HttpStatus.NOT_ACCEPTABLE.toString());
+				String resp = JsonUtil.objToJson(status);
+    			responseEntity = new ResponseEntity<String>(resp,HttpStatus.NOT_ACCEPTABLE);
+    		}
+		}else{
+			status.setStatusDesc("loraId or deviceId any or both null");
+			status.setStatusCode(HttpStatus.EXPECTATION_FAILED.toString());
+			String resp = JsonUtil.objToJson(status);
+			responseEntity = new ResponseEntity<String>(resp,HttpStatus.EXPECTATION_FAILED);
+		}	 		  				   				
+			
+		}catch(Exception e){
+			logger.error("IN contoller catch block /getDeviceInfo",e);
+			responseEntity = new ResponseEntity<String>(e.toString(), HttpStatus.BAD_REQUEST);
+		}
+		return responseEntity;
+	}
 	
 	
 	

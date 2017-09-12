@@ -21,7 +21,7 @@ public class AppConstants {
 	public static final String LED_OFF = "OFF";
 	
 	// App key Config
-	public static final String HTTP_HEADER_JWT_TOKEN = "JWT-TOKEN";
+	public static final String HTTP_HEADER_JWT_TOKEN = "jwt";
 	
 	public static final String HTTP_HEADER_TOKEN_NAME = "X-ACCESS-TOKEN";
 	public static final String HTTP_HEADER_BASE_TOKEN_NAME = "X-BASE-TOKEN";

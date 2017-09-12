@@ -31,4 +31,6 @@ public interface ConsumerInstrumentService {
 	
 	public void updateNSUser(User u)throws Exception;
 	
+	
+	
 }

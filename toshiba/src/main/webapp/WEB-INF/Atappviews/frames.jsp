@@ -23,7 +23,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 
-<title>Toshiba Users</title>
+<title>Toshiba Frame</title>
 
 <link href="css/bootstrap.min.css" rel="stylesheet">
 <link href="css/custom_siemens.css" rel="stylesheet">
@@ -49,11 +49,11 @@
 
 <body class="hold-transition skin-blue sidebar-mini">
 						<% AdminUser adminUser=(AdminUser)request.getSession().getAttribute("adminUser");
-						String fname1=("ToshibaUsersList :").concat(new Date().toString()).concat(".csv");
-						String fname2=("ToshibaUsersList :").concat(new Date().toString()).concat(".xls");
-						String fname3=("ToshibaUsersList :").concat(new Date().toString()).concat(".xml");
+						String fname1=("ToshibaFrameList :").concat(new Date().toString()).concat(".csv");
+						String fname2=("ToshibaFrameList :").concat(new Date().toString()).concat(".xls");
+						String fname3=("ToshibaFrameList :").concat(new Date().toString()).concat(".xml");
 						
-						List<TblUserInfo> userInfos=(List<TblUserInfo>)request.getAttribute("userInfos");
+						List<LoraFrame> frames=(List<LoraFrame>)request.getAttribute("frames");
 						%>
 	
 <div class="wrapper">  
@@ -117,11 +117,11 @@
             </span>
           </a>
           <ul class="treeview-menu">
-                <li><a href="#"><i class="fa fa-circle-o"></i> <b>Users</b></a></li>
-                <li><a href="frameInfos"><i class="fa fa-circle-o"></i> <b>Frames</b></a></li>
+                <li><a href="userInfoHistory"><i class="fa fa-circle-o"></i> <b>Users</b></a></li>
+                <li><a href="#"><i class="fa fa-circle-o"></i> <b>Frames</b></a></li>
           </ul>
           
-          
+           
         </li>
         
         <li class="treeview">
@@ -147,7 +147,7 @@
             </span>
           </a>
           <ul class="treeview-menu">
-            <li><a href="#"><i class="fa fa-circle-o"></i><b> Logs</b></a></li>
+            <li><a href="#"><i class="fa fa-circle-o"></i><b>Logs</b></a></li>
            
           </ul>
         </li>
@@ -176,7 +176,7 @@
 						<div class="row">
 								<div class="col-sm-8 page-heading mar-top-20">
 								<i class="page-heading-icon"><img src="images/user_icon.png" /></i>
-								<h5 class="text-blue text-semi-bold"><b>Toshiba User</b></h5>
+								<h5 class="text-blue text-semi-bold"><b>Frames</b></h5>
 								</div>
 													
 						</div><br/>
@@ -185,14 +185,26 @@
 							<div class="col-sm-12 ">	
 							
 						
-					     	<display:table  class="table table-hover  text-center"  name="<%=userInfos%>" id="row"
+					     	<display:table  class="table table-hover  text-center"  name="<%=frames%>" id="row"
 									export="true" requestURI="" defaultsort="1" defaultorder="descending" pagesize="50">
 							<display:column  property="id" title="ID" sortable="true" headerClass="sortable" />
-							<display:column  property="uname" title="UserName" sortable="true"  />
-							<display:column  property="emailId" title="EmailID" sortable="true"  />
-							<display:column  property="contactnumber" title="MobileNo." sortable="true"  />
-							<display:column  property="status" title="Status" sortable="true"  />
-							<display:column  property="createddt" title="CreatedDate" format="{0,date,dd-MM-yyyy}" sortable="true"  />
+							<display:column  property="applicationID" title="ApplicationID" sortable="true"  />
+							<display:column  property="applicationName" title="ApplicationName" sortable="true"  />
+							<display:column  property="devEUI" title="DevEUI" sortable="true"  />
+							<%-- <display:column  property="fPort" title="fPort" sortable="true"  /> --%>
+							<display:column  property="gatewayMac" title="GatewayMac" sortable="true"  />
+							<display:column  property="gatewayName" title="GatewayName" sortable="true"  />
+							<display:column  property="deviceId" title="DeviceId" sortable="true"  />
+							<display:column  property="length" title="Length" sortable="true"  />
+							<display:column  property="led1" title="Led1" sortable="true"  />
+							<display:column  property="led2" title="Led2" sortable="true"  />
+							<display:column  property="led3" title="Led3" sortable="true"  />
+							<display:column  property="led4" title="Led4" sortable="true"  />
+							<display:column  property="temperature" title="Temperature" sortable="true"  />
+							<display:column  property="pressure" title="Pressure" sortable="true"  />
+							<display:column  property="humidity" title="Humidity" sortable="true"  />
+							<display:column  property="createdAt" title="CreatedDt"  sortable="true"  />
+								
 									
 								     		   
 						 	<display:setProperty name="export.csv.filename" value="<%=fname1%>" />

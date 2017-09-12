@@ -10,11 +10,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.team.app.constant.AppConstants;
+import com.team.app.dao.FrameDao;
 import com.team.app.dao.JwtTokenDao;
 import com.team.app.dao.ToshibaKeyConfigDao;
 import com.team.app.dao.UserDao;
 import com.team.app.dao.UserInfoDao;
 import com.team.app.domain.JwtToken;
+import com.team.app.domain.LoraFrame;
 import com.team.app.domain.TblToshibaKeyConfig;
 import com.team.app.domain.TblUserInfo;
 import com.team.app.domain.User;
@@ -46,6 +48,9 @@ public class ConsumerInstrumentServiceImpl implements ConsumerInstrumentService 
 	
 	@Autowired
 	private UserDao userDao;
+	
+	@Autowired
+	private FrameDao frameDao;
 	
 	
 	
@@ -194,6 +199,9 @@ public class ConsumerInstrumentServiceImpl implements ConsumerInstrumentService 
 	public void updateNSUser(User u) throws Exception {
 		userDao.save(u);		
 	}
+
+
+
 
 
 	

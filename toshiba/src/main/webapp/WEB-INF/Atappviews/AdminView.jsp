@@ -112,8 +112,11 @@
             </span>
           </a>
           <ul class="treeview-menu">
-            <li><a href="userInfoHistory"><i class="fa fa-circle-o"></i><b>Toshiba Users</b></a></li>
+            <li><a href="userInfoHistory"><i class="fa fa-circle-o"></i><b>Users</b></a></li>
+            <li><a href="frameInfos"><i class="fa fa-circle-o"></i> <b>Frames</b></a></li>
           </ul>
+          
+             
         </li>
         
         
@@ -140,9 +143,10 @@
             </span>
           </a>
           <ul class="treeview-menu">
-            <li><a href="#"><i class="fa fa-circle-o"></i><b> Toshiba Logs</b></a></li>
+            <li><a href="userInfoHistory"><i class="fa fa-circle-o"></i><b> Logs</b></a></li>
            
           </ul>
+     
         </li>
         
                 
