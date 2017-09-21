@@ -186,7 +186,7 @@
 							
 						
 					     	<display:table  class="table table-hover  text-center"  name="<%=frames%>" id="row"
-									export="true" requestURI="" defaultsort="1" defaultorder="descending" pagesize="50">
+									export="true" requestURI="" defaultsort="1" defaultorder="descending" pagesize="100">
 							<display:column  property="id" title="ID" sortable="true" headerClass="sortable" />
 							<display:column  property="applicationID" title="ApplicationID" sortable="true"  />
 							<display:column  property="applicationName" title="ApplicationName" sortable="true"  />
@@ -195,7 +195,7 @@
 							<display:column  property="gatewayMac" title="GatewayMac" sortable="true"  />
 							<display:column  property="gatewayName" title="GatewayName" sortable="true"  />
 							<display:column  property="deviceId" title="DeviceId" sortable="true"  />
-							<display:column  property="length" title="Length" sortable="true"  />
+							<%-- <display:column  property="length" title="Length" sortable="true"  /> --%>
 							<display:column  property="led1" title="Led1" sortable="true"  />
 							<display:column  property="led2" title="Led2" sortable="true"  />
 							<display:column  property="led3" title="Led3" sortable="true"  />

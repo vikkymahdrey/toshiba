@@ -35,5 +35,24 @@ public class MqttFramesServiceImpl implements MqttFramesService {
 	public List<LoraFrame> getFramesByLoraIdAndDevId(String loraId, String deviceId) throws Exception {
 		return frmaeDao.getFramesByLoraIdAndDevId(loraId,deviceId);
 	}
+
+
+
+
+	public List<LoraFrame> getFrameByDeviceId() throws Exception {
+	
+		return frmaeDao.getFrameByDeviceId();
+	}
+
+
+
+	public List<LoraFrame> getFrameByDevId(String deviceId,String nodeName) throws Exception {
+		return frmaeDao.getFrameByDevId(deviceId,nodeName);
+	}
+
+
+
+
+
 	
 }

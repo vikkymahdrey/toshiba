@@ -12,4 +12,8 @@ public interface MqttFramesService {
 
 	List<LoraFrame> getFramesByLoraIdAndDevId(String loraId, String deviceId)throws Exception;
 
+	List<LoraFrame> getFrameByDeviceId()throws Exception;
+
+	List<LoraFrame> getFrameByDevId(String deviceId, String nodeName)throws Exception;
+
 }
