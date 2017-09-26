@@ -31,7 +31,7 @@ private static final AtLogger logger = AtLogger.getLogger(DownlinkUplinkControll
 	@RequestMapping(value= {"/downlinkQueue"}, method=RequestMethod.GET)
     public String userInfoHistoryHandler(Map<String,Object> map) {
 		try{
-			
+			logger.debug("In /downlinkQueue");
 			mqttFramesService.deleteDownlinkQuere();
 		String url="https://139.59.84.50:8080/api/nodes/4786e6ed00490048/queue";
 		logger.debug("URLConn",url);
