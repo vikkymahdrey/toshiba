@@ -39,7 +39,7 @@ public class MqttBroker implements MqttCallback,MqttIntrf {
 	
 	public void doDemo() {
 	    try {
-	    	logger.debug("/** INside MQTT Broker 4786e6ed00490048 **/");
+	    	logger.debug("/ INside MQTT Broker 4786e6ed00490048 ");
 	    	MqttConnectOptions connOpts = new MqttConnectOptions();
 	        connOpts.setUserName("loragw");
 	        connOpts.setPassword("loragw".toCharArray());
@@ -53,6 +53,28 @@ public class MqttBroker implements MqttCallback,MqttIntrf {
 	        message.setPayload("sending......."
 	                .getBytes());
 	        client.publish("application/1/node/4786e6ed00490048/tx", message);
+	        System.out.println("Message printing here "+message);
+	        //System.exit(0);
+	    } catch (MqttException e) {
+	        e.printStackTrace();
+	    }
+	    
+	    
+	    try {
+	    	logger.debug("/** INside MQTT Broker 4786e6ed00490044 **/");
+	    	MqttConnectOptions connOpts = new MqttConnectOptions();
+	        connOpts.setUserName("loragw");
+	        connOpts.setPassword("loragw".toCharArray());
+	        connOpts.setCleanSession(true);
+	        client = new MqttClient("tcp://139.59.84.50:1883", MqttClient.generateClientId());
+	        
+	        client.connect(connOpts);
+	        client.setCallback(this);
+	        client.subscribe("application/1/node/4786e6ed00490044/rx");
+	        MqttMessage message = new MqttMessage();
+	        message.setPayload("sending......."
+	                .getBytes());
+	        client.publish("application/1/node/4786e6ed00490044/tx", message);
 	        System.out.println("Message printing here "+message);
 	        //System.exit(0);
 	    } catch (MqttException e) {
@@ -81,16 +103,7 @@ public class MqttBroker implements MqttCallback,MqttIntrf {
 				  		logger.debug("REsultant json",json);
 				  		
 				  		 frame=new LoraFrame();
-				  		/*if(json.get("devEUI").toString().equalsIgnoreCase("4786e6ed00490048")){
-				  	  		frame.setLoraId("1");
-				  	  	}else if(json.get("devEUI").toString().equalsIgnoreCase("4786e6ed00490044")){
-				  	  		frame.setLoraId("2");
-				  	  	}else if(json.get("devEUI").toString().equalsIgnoreCase("4786e6ed00490049")){
-				  	  		frame.setLoraId("3");
-				  		}else{
-				  			frame.setLoraId("4");
-				  		}*/
-				  		 //frame.setLoraId("1");
+				  		
 				  		 frame.setApplicationID(json.get("applicationID").toString());
 				  		 frame.setApplicationName(json.get("applicationName").toString());
 				  		 frame.setNodeName(json.get("nodeName").toString());
@@ -142,15 +155,10 @@ public class MqttBroker implements MqttCallback,MqttIntrf {
 				     		 		  String devLed12 = decodeBinary.substring(0, decodeBinary.length()-2);
 				     		 		  	logger.debug("devLed12 : ",devLed12);	
 				     		 		  	
-				     		 		  	
-				     		 		  /*	
-				     		 		  String devId = devLed12.substring(devLed12.length()-3, devLed12.length());
-				     		 		  	logger.debug("devId : ",devId);*/
-				     		 		  	
+				     		 		 			     		 		  	
 				     		 		  int dId=Integer.parseInt(devLed12,2);
 				     		 		  			logger.debug("dId : ",dId);
-				     		 		  
-				     		 		  		
+				     		 			
 				     		 		 	
 				     		 		 
 				     		 		 				  	  					

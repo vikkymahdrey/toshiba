@@ -9,9 +9,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.Column;
-
-import org.apache.tomcat.util.codec.binary.Base64;
+import org.apache.commons.codec.binary.Base64;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -714,6 +712,7 @@ public class ConsumerInstrumentController {
 								json.put("pressure", frm.getPressure());
 								json.put("temperature", frm.getTemperature());
 								json.put("nodeName", frm.getNodeName());
+								json.put("devEUI", frm.getDevEUI());
 								//json.put("loraId", frm.getLoraId());
 								json.put("deviceId", frm.getDeviceId());
 								json.put("devAdd", frm.getDeviceId());
@@ -754,122 +753,6 @@ public class ConsumerInstrumentController {
 		return responseEntity;
 	}
 	
-	/*@SuppressWarnings("unchecked")
-	@RequestMapping(value = "/deviceInfo", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<String> deviceInfoHandler(@RequestHeader(value = AppConstants.HTTP_HEADER_JWT_TOKEN) String jwt){
-		logger.info("Inside in /deviceInfo ");
-		ResponseEntity<String> responseEntity = null;
-		Status status=null;
-				status=new Status();
-		try{			
-			
-			logger.debug("JWT TOken",jwt);
-			if( jwt!=null && !jwt.isEmpty()){    					
-				List<LoraFrame> frames=mqttFramesService.getFrameByDeviceId();
-				
-				if(frames!=null && !frames.isEmpty()){
-				 LoraFrame res=frames.get(0);
-				 	logger.info("res object ",res.getNodeName());
-					JSONArray arr=null;
-						arr=new JSONArray();
-					JSONArray resultant=null;
-						resultant=new JSONArray();
-					JSONObject result=null;
-						result=new JSONObject();
-					int i=0;
-					String node="";
-						
-					for(LoraFrame f : frames){
-						List<LoraFrame> frmList=mqttFramesService.getFrameByDevId(f.getDeviceId(),f.getNodeName());
-						if(frmList!=null && !frmList.isEmpty()){
-							LoraFrame frm=frmList.get(0);
-							if(res.getNodeName().equalsIgnoreCase(frm.getNodeName())){
-								
-								JSONObject json=null;
-									json=new JSONObject();								
-									json.put("id", frm.getId());
-									json.put("led1", frm.getLed1());
-									json.put("led2", frm.getLed2());
-									json.put("led3", frm.getLed3());
-									json.put("led4", frm.getLed4());
-									json.put("humidity", frm.getHumidity());
-									json.put("pressure", frm.getPressure());
-									json.put("temperature", frm.getTemperature());
-									json.put("nodeName", frm.getNodeName());
-									//json.put("loraId", frm.getLoraId());
-									json.put("deviceId", frm.getDeviceId());
-									
-									try{
-										json.put("date", String.valueOf(new SimpleDateFormat("yyyy-MM-dd hh:mm:ss")
-											.parse(frm.getCreatedAt().toString()).getTime()));
-									}catch(Exception e){
-										logger.error(e);
-									}
-									
-									//jsonArr.add(json);								
-									arr.add(json);
-							}else{
-							 	if(i==0){
-									JSONArray rArr=null;
-											rArr=new JSONArray();
-									JSONObject json=null;
-										json=new JSONObject();								
-										json.put("id", frm.getId());
-										json.put("led1", frm.getLed1());
-										json.put("led2", frm.getLed2());
-										json.put("led3", frm.getLed3());
-										json.put("led4", frm.getLed4());
-										json.put("humidity", frm.getHumidity());
-										json.put("pressure", frm.getPressure());
-										json.put("temperature", frm.getTemperature());
-										json.put("nodeName", frm.getNodeName());
-										//json.put("loraId", frm.getLoraId());
-										json.put("deviceId", frm.getDeviceId());
-										
-										try{
-											json.put("date", String.valueOf(new SimpleDateFormat("yyyy-MM-dd hh:mm:ss")
-												.parse(frm.getCreatedAt().toString()).getTime()));
-										}catch(Exception e){
-											logger.error(e);
-										}
-										
-										rArr.add(json);								
-										arr.add(rArr);
-										i++;
-										node=frm.getNodeName();
-							 	}else if(node.equalsIgnoreCase(frm.getNodeName())){
-							 		
-							 	}
-							}
-							
-							resultant.add(arr);
-						}	
-					}	
-							result.put("devices", resultant);
-						
-					String resp = JsonUtil.objToJson(result);
-					responseEntity = new ResponseEntity<String>(resp,HttpStatus.OK);
-				}else{
-					status.setStatusDesc("No frames found");
-	    			status.setStatusCode(HttpStatus.NO_CONTENT.toString());
-					String resp = JsonUtil.objToJson(status);
-	    			responseEntity = new ResponseEntity<String>(resp,HttpStatus.NO_CONTENT);
-				}
-    		    					
-    		}else{
-    			status.setStatusDesc("Jwt token is empty");
-    			status.setStatusCode(HttpStatus.NOT_ACCEPTABLE.toString());
-				String resp = JsonUtil.objToJson(status);
-    			responseEntity = new ResponseEntity<String>(resp,HttpStatus.NOT_ACCEPTABLE);
-    		}
-    		 		  				   				
-			
-		}catch(Exception e){
-			logger.error("IN contoller catch block /deviceInfo",e);
-			responseEntity = new ResponseEntity<String>(e.toString(), HttpStatus.BAD_REQUEST);
-		}
-		return responseEntity;
-	}*/
 	
 	
 	
@@ -989,14 +872,16 @@ public class ConsumerInstrumentController {
 						
 							if(jsonArr!=null && jsonArr.size()>0){
 								
+								JSONObject json=(JSONObject) jsonArr.get(0);
+								
 								String devices="00000000";
 								String command="0000";
 								String ledadd="0001";
 								
 								
 								for (int j = 0; j < jsonArr.size(); j++) {
-									JSONObject jObj=(JSONObject) jsonArr.get(i);
-									   logger.debug("/deviceId",jObj.get("deviceId"));
+									JSONObject jObj=(JSONObject) jsonArr.get(j);
+									   logger.debug("/deviceId printing=",jObj.get("deviceId").toString());
 										
 										
 										if(!jObj.get("deviceId").toString().isEmpty() && jObj.get("deviceId").toString()!=null){
@@ -1023,49 +908,61 @@ public class ConsumerInstrumentController {
 											status.setStatusDesc("deviceId is null or empty");
 							    			status.setStatusCode(HttpStatus.BAD_REQUEST.toString());
 											String resp = JsonUtil.objToJson(status);
-							    			responseEntity = new ResponseEntity<String>(resp,HttpStatus.BAD_REQUEST);
+											logger.debug("led controlling JSON body ",resp);
+							    			return new ResponseEntity<String>(resp,HttpStatus.BAD_REQUEST);
 										}
 										
 										logger.debug("Downlink as devices "+devices);
-										
-											if(!jObj.get("led1").toString().isEmpty() && jObj.get("led1").toString()!=null){
-												if(jObj.get("led1").toString().equalsIgnoreCase("0")){
-													command="0010";
-												}else if(jObj.get("led1").toString().equalsIgnoreCase("1")){
-													command="0001";
-												}
-												
-											}else{
-												status.setStatusDesc("led1 is null or empty");
-								    			status.setStatusCode(HttpStatus.BAD_REQUEST.toString());
-												String resp = JsonUtil.objToJson(status);
-								    			responseEntity = new ResponseEntity<String>(resp,HttpStatus.BAD_REQUEST);
-											}
-										
-										logger.debug("Downlink as command "+command);
-										
-								}	
+								}
+								
+								if(!json.get("led1").toString().isEmpty() && json.get("led1").toString()!=null){
+									if(json.get("led1").toString().equalsIgnoreCase("0")){
+										command="0010";
+									}else if(json.get("led1").toString().equalsIgnoreCase("1")){
+										command="0001";
+									}
+									
+								}else{
+									status.setStatusDesc("led1 is null or empty");
+					    			status.setStatusCode(HttpStatus.BAD_REQUEST.toString());
+									String resp = JsonUtil.objToJson(status);
+									logger.debug("led controlling JSON body ",resp);
+					    			return new ResponseEntity<String>(resp,HttpStatus.BAD_REQUEST);
+								}
+							
+							logger.debug("Downlink as command "+command);
+							
+								String devEUI=json.get("devEUI").toString();
+								if(null==devEUI){
+									status.setStatusDesc("devEUI is null or empty");
+					    			status.setStatusCode(HttpStatus.BAD_REQUEST.toString());
+									String resp = JsonUtil.objToJson(status);
+									logger.debug("led controlling JSON body ",resp);
+					    			return new ResponseEntity<String>(resp,HttpStatus.BAD_REQUEST);
+								}
+									logger.debug("devEUI for downlink"+command);
 								
 																
 								String downlinkData=devices+command+ledadd;
 								
-								logger.debug("downlinkData "+downlinkData);
+								logger.debug("downlinkData resultant"+downlinkData);
+								logger.debug("Base64 resultant",Base64.encodeBase64String(downlinkData.getBytes()));
 								
-								Base64.encodeBase64(downlinkData.getBytes());
+								//Base64.encodeBase64(downlinkData.getBytes());
 								
 								JSONObject jsonObj=null;
 				    				jsonObj=new JSONObject();
 				    				jsonObj.put("confirmed",true);
-				    				jsonObj.put("data",Base64.encodeBase64(downlinkData.getBytes()).toString());
-				    				jsonObj.put("devEUI","4786e6ed00490048");
-				    				jsonObj.put("fPort","");
+				    				jsonObj.put("data",Base64.encodeBase64String(downlinkData.getBytes()));
+				    				jsonObj.put("devEUI","4786e6ed00490044");
+				    				jsonObj.put("fPort",2);
 				    				jsonObj.put("reference","BLE-NODE");
 				    	
 			    				
 				    				String jsonData=jsonObj.toString(); 
 			    			
 										
-										String url="https://139.59.84.50:8080/api/nodes/4786e6ed00490048/queue";
+				    					String url="https://139.59.84.50:8080/api/nodes/"+devEUI+"/queue";
 					    				logger.debug("URLConn",url);
 					    				
 					    				URL obj1 = new URL(url);
@@ -1089,11 +986,13 @@ public class ConsumerInstrumentController {
 					    					status.setStatusDesc("downlink for LED1 sent to queue successfully");
 							    			status.setStatusCode(HttpStatus.OK.toString());
 											String resp = JsonUtil.objToJson(status);
+											logger.debug("led controlling JSON body ",resp);
 							    			responseEntity = new ResponseEntity<String>(resp,HttpStatus.OK);	
 					    				}else{
 					    					status.setStatusDesc("downlink for LED1 failed");
 							    			status.setStatusCode(HttpStatus.NOT_ACCEPTABLE.toString());
 											String resp = JsonUtil.objToJson(status);
+											logger.debug("led controlling JSON body ",resp);
 							    			responseEntity = new ResponseEntity<String>(resp,HttpStatus.NOT_ACCEPTABLE);
 					    				}
 									
@@ -1105,6 +1004,7 @@ public class ConsumerInstrumentController {
 								status.setStatusDesc("further devices json array is null/0");
 				    			status.setStatusCode(HttpStatus.BAD_REQUEST.toString());
 								String resp = JsonUtil.objToJson(status);
+								logger.debug("led controlling JSON body ",resp);
 				    			responseEntity = new ResponseEntity<String>(resp,HttpStatus.BAD_REQUEST);
 							}
 					
@@ -1114,6 +1014,7 @@ public class ConsumerInstrumentController {
 					status.setStatusDesc("devices of jsonarray is null/0");
 	    			status.setStatusCode(HttpStatus.EXPECTATION_FAILED.toString());
 					String resp = JsonUtil.objToJson(status);
+					logger.debug("led controlling JSON body ",resp);
 	    			responseEntity = new ResponseEntity<String>(resp,HttpStatus.EXPECTATION_FAILED);
 				}
     		    					
@@ -1121,17 +1022,20 @@ public class ConsumerInstrumentController {
     			status.setStatusDesc("Jwt token is empty");
     			status.setStatusCode(HttpStatus.NOT_ACCEPTABLE.toString());
 				String resp = JsonUtil.objToJson(status);
+				logger.debug("led controlling JSON body ",resp);
     			responseEntity = new ResponseEntity<String>(resp,HttpStatus.NOT_ACCEPTABLE);
     		}
 		}else{
 			status.setStatusDesc("devices in request body is null");
 			status.setStatusCode(HttpStatus.EXPECTATION_FAILED.toString());
 			String resp = JsonUtil.objToJson(status);
+			logger.debug("led controlling JSON body ",resp);
 			responseEntity = new ResponseEntity<String>(resp,HttpStatus.EXPECTATION_FAILED);
 		}	 		  				   				
 			
 		}catch(Exception e){
 			logger.error("IN contoller catch block /setDownlinkOnLED1",e);
+			e.printStackTrace();
 			responseEntity = new ResponseEntity<String>(e.toString(), HttpStatus.BAD_REQUEST);
 		}
 		return responseEntity;
@@ -1140,7 +1044,7 @@ public class ConsumerInstrumentController {
 	
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/setDownlinkOnLED2", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<String> setDownlinkOnLED2Handler(@RequestBody String received,@RequestHeader(value = AppConstants.HTTP_HEADER_JWT_TOKEN) String jwt){
+	public ResponseEntity<String> setDownlinkOnLED2(@RequestBody String received,@RequestHeader(value = AppConstants.HTTP_HEADER_JWT_TOKEN) String jwt){
 		logger.info("Inside in /setDownlinkOnLED2 ");
 		ResponseEntity<String> responseEntity = null;
 		Status status=null;
@@ -1161,31 +1065,150 @@ public class ConsumerInstrumentController {
     				logger.debug("devices for /setDownlinkOnLED2 :",obj.get("devices").toString());
     			
 			
-			logger.debug("JWT TOken",jwt);
+			logger.debug("JWT TOken ",jwt);
 			if( jwt!=null && !jwt.isEmpty()){    					
 				JSONArray arr=(JSONArray) obj.get("devices");
 				
 				if(arr!=null && arr.size()>0){
 					for (int i = 0; i < arr.size(); i++) {
-						JSONArray jsonArr=(JSONArray) arr.get(i);		
+						logger.debug("INside for main loop");
+						JSONArray jsonArr=(JSONArray) arr.get(i);	
+						
 							if(jsonArr!=null && jsonArr.size()>0){
+								
+								JSONObject json=(JSONObject) jsonArr.get(0);
+								
+								String devices="00000000";
+								String command="0000";
+								String ledadd="0010";
+								
+								
 								for (int j = 0; j < jsonArr.size(); j++) {
-									JSONObject jObj=(JSONObject) jsonArr.get(0);
-									logger.debug("/nodeName",jObj.get("nodeName"));
-									logger.debug("/deviceId",jObj.get("deviceId"));
-									logger.debug("/led2",jObj.get("led2"));
-									
-									
-									status.setStatusDesc("downlink for LED2 sent to queue successfully");
-					    			status.setStatusCode(HttpStatus.OK.toString());
-									String resp = JsonUtil.objToJson(status);
-					    			responseEntity = new ResponseEntity<String>(resp,HttpStatus.OK);	
-									
+									JSONObject jObj=(JSONObject) jsonArr.get(j);
+									   logger.debug("/deviceId printing=",jObj.get("deviceId").toString());
+										
+										
+										if(!jObj.get("deviceId").toString().isEmpty() && jObj.get("deviceId").toString()!=null){
+											
+											if(jObj.get("deviceId").toString().equalsIgnoreCase("000")){
+												devices=devices.substring(0, 7)+"1";
+											}else if(jObj.get("deviceId").toString().equalsIgnoreCase("001")){
+												 logger.debug("/inside deviceId as ",devices);
+												devices=devices.substring(0, 6)+"1"+devices.substring(7);
+											}else if(jObj.get("deviceId").toString().equalsIgnoreCase("002")){
+												devices=devices.substring(0, 5)+"1"+devices.substring(6);
+											}else if(jObj.get("deviceId").toString().equalsIgnoreCase("003")){
+												devices=devices.substring(0, 4)+"1"+devices.substring(5);
+											}else if(jObj.get("deviceId").toString().equalsIgnoreCase("004")){
+												devices=devices.substring(0, 3)+"1"+devices.substring(4);
+											}else if(jObj.get("deviceId").toString().equalsIgnoreCase("005")){
+												devices=devices.substring(0, 2)+"1"+devices.substring(3);
+											}else if(jObj.get("deviceId").toString().equalsIgnoreCase("006")){
+												devices=devices.substring(0, 1)+"1"+devices.substring(2);
+											}else if(jObj.get("deviceId").toString().equalsIgnoreCase("007")){
+												devices="1"+devices.substring(1);
+											}
+										}else{
+											status.setStatusDesc("deviceId is null or empty");
+							    			status.setStatusCode(HttpStatus.BAD_REQUEST.toString());
+											String resp = JsonUtil.objToJson(status);
+											logger.debug("led controlling JSON body ",resp);
+							    			return new ResponseEntity<String>(resp,HttpStatus.BAD_REQUEST);
+										}
+										
+										logger.debug("Downlink as devices "+devices);
 								}
+								
+								if(!json.get("led2").toString().isEmpty() && json.get("led2").toString()!=null){
+									if(json.get("led2").toString().equalsIgnoreCase("0")){
+										command="0010";
+									}else if(json.get("led2").toString().equalsIgnoreCase("1")){
+										command="0001";
+									}
+									
+								}else{
+									status.setStatusDesc("led2 is null or empty");
+					    			status.setStatusCode(HttpStatus.BAD_REQUEST.toString());
+									String resp = JsonUtil.objToJson(status);
+									logger.debug("led controlling JSON body ",resp);
+					    			return new ResponseEntity<String>(resp,HttpStatus.BAD_REQUEST);
+								}
+							
+							logger.debug("Downlink as command "+command);
+								
+																
+								String downlinkData=devices+command+ledadd;
+								
+								logger.debug("downlinkData resultant"+downlinkData);
+								logger.debug("Base64 resultant",Base64.encodeBase64String(downlinkData.getBytes()));
+								
+								//Base64.encodeBase64(downlinkData.getBytes());
+								
+								String devEUI=json.get("devEUI").toString().trim();
+								if(null==devEUI){
+									status.setStatusDesc("devEUI is null or empty");
+					    			status.setStatusCode(HttpStatus.BAD_REQUEST.toString());
+									String resp = JsonUtil.objToJson(status);
+									logger.debug("led controlling JSON body ",resp);
+					    			return new ResponseEntity<String>(resp,HttpStatus.BAD_REQUEST);
+								}
+										logger.debug("devEUI for downlink"+command);
+								
+								JSONObject jsonObj=null;
+				    				jsonObj=new JSONObject();
+				    				jsonObj.put("confirmed",true);
+				    				jsonObj.put("data",Base64.encodeBase64String(downlinkData.getBytes()));
+				    				jsonObj.put("devEUI",devEUI);
+				    				jsonObj.put("fPort",2);
+				    				jsonObj.put("reference","BLE-NODE");
+				    	
+			    				
+				    				String jsonData=jsonObj.toString(); 
+			    			
+										
+				    					String url="https://139.59.84.50:8080/api/nodes/"+devEUI+"/queue";
+					    				logger.debug("URLConn",url);
+					    				
+					    				URL obj1 = new URL(url);
+					    				HttpURLConnection con = (HttpURLConnection) obj1.openConnection();
+					    				con.setDoOutput(true);
+					    				con.setRequestMethod("POST");
+					    				con.setRequestProperty("accept", "application/json");
+					    				con.setRequestProperty("Content-Type", "application/json");
+					    				con.setRequestProperty("Grpc-Metadata-Authorization",jwt);
+					    				
+					    				OutputStream os = con.getOutputStream();
+					    		        os.write(jsonData.getBytes());
+					    		        os.flush();
+					    		        os.close();
+					    		        
+					    				int responseCode = con.getResponseCode();
+					    					logger.debug("POST Response Code :: " + responseCode);
+					    						logger.debug("POST Response message :: " + con.getResponseMessage());
+					    				
+					    				if(responseCode == HttpURLConnection.HTTP_OK) {
+					    					status.setStatusDesc("downlink for LED2 sent to queue successfully");
+							    			status.setStatusCode(HttpStatus.OK.toString());
+											String resp = JsonUtil.objToJson(status);
+											logger.debug("led controlling JSON body ",resp);
+							    			responseEntity = new ResponseEntity<String>(resp,HttpStatus.OK);	
+					    				}else{
+					    					status.setStatusDesc("downlink for LED2 failed");
+							    			status.setStatusCode(HttpStatus.NOT_ACCEPTABLE.toString());
+											String resp = JsonUtil.objToJson(status);
+											logger.debug("led controlling JSON body ",resp);
+							    			responseEntity = new ResponseEntity<String>(resp,HttpStatus.NOT_ACCEPTABLE);
+					    				}
+									
+									
+									
+									
+								
 							}else{
 								status.setStatusDesc("further devices json array is null/0");
 				    			status.setStatusCode(HttpStatus.BAD_REQUEST.toString());
 								String resp = JsonUtil.objToJson(status);
+								logger.debug("led controlling JSON body ",resp);
 				    			responseEntity = new ResponseEntity<String>(resp,HttpStatus.BAD_REQUEST);
 							}
 					
@@ -1195,6 +1218,7 @@ public class ConsumerInstrumentController {
 					status.setStatusDesc("devices of jsonarray is null/0");
 	    			status.setStatusCode(HttpStatus.EXPECTATION_FAILED.toString());
 					String resp = JsonUtil.objToJson(status);
+					logger.debug("led controlling JSON body ",resp);
 	    			responseEntity = new ResponseEntity<String>(resp,HttpStatus.EXPECTATION_FAILED);
 				}
     		    					
@@ -1202,17 +1226,20 @@ public class ConsumerInstrumentController {
     			status.setStatusDesc("Jwt token is empty");
     			status.setStatusCode(HttpStatus.NOT_ACCEPTABLE.toString());
 				String resp = JsonUtil.objToJson(status);
+				logger.debug("led controlling JSON body ",resp);
     			responseEntity = new ResponseEntity<String>(resp,HttpStatus.NOT_ACCEPTABLE);
     		}
 		}else{
 			status.setStatusDesc("devices in request body is null");
 			status.setStatusCode(HttpStatus.EXPECTATION_FAILED.toString());
 			String resp = JsonUtil.objToJson(status);
+			logger.debug("led controlling JSON body ",resp);
 			responseEntity = new ResponseEntity<String>(resp,HttpStatus.EXPECTATION_FAILED);
 		}	 		  				   				
 			
 		}catch(Exception e){
 			logger.error("IN contoller catch block /setDownlinkOnLED2",e);
+			e.printStackTrace();
 			responseEntity = new ResponseEntity<String>(e.toString(), HttpStatus.BAD_REQUEST);
 		}
 		return responseEntity;
@@ -1221,7 +1248,7 @@ public class ConsumerInstrumentController {
 	
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/setDownlinkOnLED3", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<String> setDownlinkOnLED3Handler(@RequestBody String received,@RequestHeader(value = AppConstants.HTTP_HEADER_JWT_TOKEN) String jwt){
+	public ResponseEntity<String> setDownlinkOnLED3(@RequestBody String received,@RequestHeader(value = AppConstants.HTTP_HEADER_JWT_TOKEN) String jwt){
 		logger.info("Inside in /setDownlinkOnLED3 ");
 		ResponseEntity<String> responseEntity = null;
 		Status status=null;
@@ -1242,31 +1269,146 @@ public class ConsumerInstrumentController {
     				logger.debug("devices for /setDownlinkOnLED3 :",obj.get("devices").toString());
     			
 			
-			logger.debug("JWT TOken",jwt);
+			logger.debug("JWT TOken ",jwt);
 			if( jwt!=null && !jwt.isEmpty()){    					
 				JSONArray arr=(JSONArray) obj.get("devices");
 				
 				if(arr!=null && arr.size()>0){
 					for (int i = 0; i < arr.size(); i++) {
-						JSONArray jsonArr=(JSONArray) arr.get(i);		
+						logger.debug("INside for main loop");
+						JSONArray jsonArr=(JSONArray) arr.get(i);	
+						
 							if(jsonArr!=null && jsonArr.size()>0){
+								
+								JSONObject json=(JSONObject) jsonArr.get(0);
+								
+								String devices="00000000";
+								String command="0011";
+								String ledadd="0100";
+								
+								
+								
 								for (int j = 0; j < jsonArr.size(); j++) {
-									JSONObject jObj=(JSONObject) jsonArr.get(0);
-									logger.debug("/nodeName",jObj.get("nodeName"));
-									logger.debug("/deviceId",jObj.get("deviceId"));
-									logger.debug("/led3",jObj.get("led3"));
-									
-									
-									status.setStatusDesc("downlink for LED3 sent to queue successfully");
-					    			status.setStatusCode(HttpStatus.OK.toString());
-									String resp = JsonUtil.objToJson(status);
-					    			responseEntity = new ResponseEntity<String>(resp,HttpStatus.OK);	
-									
+									JSONObject jObj=(JSONObject) jsonArr.get(j);
+									   logger.debug("/deviceId printing=",jObj.get("deviceId").toString());
+										
+										
+										if(!jObj.get("deviceId").toString().isEmpty() && jObj.get("deviceId").toString()!=null){
+											
+											if(jObj.get("deviceId").toString().equalsIgnoreCase("000")){
+												devices=devices.substring(0, 7)+"1";
+											}else if(jObj.get("deviceId").toString().equalsIgnoreCase("001")){
+												 logger.debug("/inside deviceId as ",devices);
+												devices=devices.substring(0, 6)+"1"+devices.substring(7);
+											}else if(jObj.get("deviceId").toString().equalsIgnoreCase("002")){
+												devices=devices.substring(0, 5)+"1"+devices.substring(6);
+											}else if(jObj.get("deviceId").toString().equalsIgnoreCase("003")){
+												devices=devices.substring(0, 4)+"1"+devices.substring(5);
+											}else if(jObj.get("deviceId").toString().equalsIgnoreCase("004")){
+												devices=devices.substring(0, 3)+"1"+devices.substring(4);
+											}else if(jObj.get("deviceId").toString().equalsIgnoreCase("005")){
+												devices=devices.substring(0, 2)+"1"+devices.substring(3);
+											}else if(jObj.get("deviceId").toString().equalsIgnoreCase("006")){
+												devices=devices.substring(0, 1)+"1"+devices.substring(2);
+											}else if(jObj.get("deviceId").toString().equalsIgnoreCase("007")){
+												devices="1"+devices.substring(1);
+											}
+										}else{
+											status.setStatusDesc("deviceId is null or empty");
+							    			status.setStatusCode(HttpStatus.BAD_REQUEST.toString());
+											String resp = JsonUtil.objToJson(status);
+											logger.debug("led controlling JSON body ",resp);
+							    			return new ResponseEntity<String>(resp,HttpStatus.BAD_REQUEST);
+										}
+										
+										logger.debug("Downlink as devices "+devices);
 								}
+								
+								
+								logger.debug("Downlink as command "+command);
+								
+								String value=json.get("led3").toString();
+								if(value==null){
+									status.setStatusDesc("brightness value is null or empty");
+					    			status.setStatusCode(HttpStatus.BAD_REQUEST.toString());
+									String resp = JsonUtil.objToJson(status);
+									logger.debug("led controlling JSON body ",resp);
+					    			return new ResponseEntity<String>(resp,HttpStatus.BAD_REQUEST);
+								}
+								
+																
+								String downlinkData=devices+command+ledadd+value;
+								
+								logger.debug("downlinkData resultant"+downlinkData);
+								logger.debug("Base64 resultant",Base64.encodeBase64String(downlinkData.getBytes()));
+								
+								//Base64.encodeBase64(downlinkData.getBytes());
+								
+								String devEUI=json.get("devEUI").toString().trim();
+								if(null==devEUI){
+									status.setStatusDesc("devEUI is null or empty");
+					    			status.setStatusCode(HttpStatus.BAD_REQUEST.toString());
+									String resp = JsonUtil.objToJson(status);
+									logger.debug("led controlling JSON body ",resp);
+					    			return new ResponseEntity<String>(resp,HttpStatus.BAD_REQUEST);
+								}
+										logger.debug("devEUI for downlink"+command);
+								
+								JSONObject jsonObj=null;
+				    				jsonObj=new JSONObject();
+				    				jsonObj.put("confirmed",true);
+				    				jsonObj.put("data",Base64.encodeBase64String(downlinkData.getBytes()));
+				    				jsonObj.put("devEUI",devEUI);
+				    				jsonObj.put("fPort",2);
+				    				jsonObj.put("reference","BLE-NODE");
+				    	
+			    				
+				    				String jsonData=jsonObj.toString(); 
+			    			
+										
+										String url="https://139.59.84.50:8080/api/nodes/"+devEUI+"/queue";
+					    				logger.debug("URLConn",url);
+					    				
+					    				URL obj1 = new URL(url);
+					    				HttpURLConnection con = (HttpURLConnection) obj1.openConnection();
+					    				con.setDoOutput(true);
+					    				con.setRequestMethod("POST");
+					    				con.setRequestProperty("accept", "application/json");
+					    				con.setRequestProperty("Content-Type", "application/json");
+					    				con.setRequestProperty("Grpc-Metadata-Authorization",jwt);
+					    				
+					    				OutputStream os = con.getOutputStream();
+					    		        os.write(jsonData.getBytes());
+					    		        os.flush();
+					    		        os.close();
+					    		        
+					    				int responseCode = con.getResponseCode();
+					    					logger.debug("POST Response Code :: " + responseCode);
+					    						logger.debug("POST Response message :: " + con.getResponseMessage());
+					    				
+					    				if(responseCode == HttpURLConnection.HTTP_OK) {
+					    					status.setStatusDesc("downlink for LED3 sent to queue successfully");
+							    			status.setStatusCode(HttpStatus.OK.toString());
+											String resp = JsonUtil.objToJson(status);
+											logger.debug("led controlling JSON body ",resp);
+							    			responseEntity = new ResponseEntity<String>(resp,HttpStatus.OK);	
+					    				}else{
+					    					status.setStatusDesc("downlink for LED3 failed");
+							    			status.setStatusCode(HttpStatus.NOT_ACCEPTABLE.toString());
+											String resp = JsonUtil.objToJson(status);
+											logger.debug("led controlling JSON body ",resp);
+							    			responseEntity = new ResponseEntity<String>(resp,HttpStatus.NOT_ACCEPTABLE);
+					    				}
+									
+									
+									
+									
+								
 							}else{
 								status.setStatusDesc("further devices json array is null/0");
 				    			status.setStatusCode(HttpStatus.BAD_REQUEST.toString());
 								String resp = JsonUtil.objToJson(status);
+								logger.debug("led controlling JSON body ",resp);
 				    			responseEntity = new ResponseEntity<String>(resp,HttpStatus.BAD_REQUEST);
 							}
 					
@@ -1276,6 +1418,7 @@ public class ConsumerInstrumentController {
 					status.setStatusDesc("devices of jsonarray is null/0");
 	    			status.setStatusCode(HttpStatus.EXPECTATION_FAILED.toString());
 					String resp = JsonUtil.objToJson(status);
+					logger.debug("led controlling JSON body ",resp);
 	    			responseEntity = new ResponseEntity<String>(resp,HttpStatus.EXPECTATION_FAILED);
 				}
     		    					
@@ -1283,25 +1426,29 @@ public class ConsumerInstrumentController {
     			status.setStatusDesc("Jwt token is empty");
     			status.setStatusCode(HttpStatus.NOT_ACCEPTABLE.toString());
 				String resp = JsonUtil.objToJson(status);
+				logger.debug("led controlling JSON body ",resp);
     			responseEntity = new ResponseEntity<String>(resp,HttpStatus.NOT_ACCEPTABLE);
     		}
 		}else{
 			status.setStatusDesc("devices in request body is null");
 			status.setStatusCode(HttpStatus.EXPECTATION_FAILED.toString());
 			String resp = JsonUtil.objToJson(status);
+			logger.debug("led controlling JSON body ",resp);
 			responseEntity = new ResponseEntity<String>(resp,HttpStatus.EXPECTATION_FAILED);
 		}	 		  				   				
 			
 		}catch(Exception e){
 			logger.error("IN contoller catch block /setDownlinkOnLED3",e);
+			e.printStackTrace();
 			responseEntity = new ResponseEntity<String>(e.toString(), HttpStatus.BAD_REQUEST);
 		}
 		return responseEntity;
 	}
 	
+	
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/setDownlinkOnLED4", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<String> setDownlinkOnLED4Handler(@RequestBody String received,@RequestHeader(value = AppConstants.HTTP_HEADER_JWT_TOKEN) String jwt){
+	public ResponseEntity<String> setDownlinkOnLED4(@RequestBody String received,@RequestHeader(value = AppConstants.HTTP_HEADER_JWT_TOKEN) String jwt){
 		logger.info("Inside in /setDownlinkOnLED4 ");
 		ResponseEntity<String> responseEntity = null;
 		Status status=null;
@@ -1322,31 +1469,146 @@ public class ConsumerInstrumentController {
     				logger.debug("devices for /setDownlinkOnLED4 :",obj.get("devices").toString());
     			
 			
-			logger.debug("JWT TOken",jwt);
+			logger.debug("JWT TOken ",jwt);
 			if( jwt!=null && !jwt.isEmpty()){    					
 				JSONArray arr=(JSONArray) obj.get("devices");
 				
 				if(arr!=null && arr.size()>0){
 					for (int i = 0; i < arr.size(); i++) {
-						JSONArray jsonArr=(JSONArray) arr.get(i);		
+						logger.debug("INside for main loop");
+						JSONArray jsonArr=(JSONArray) arr.get(i);	
+						
 							if(jsonArr!=null && jsonArr.size()>0){
+								
+								JSONObject json=(JSONObject) jsonArr.get(0);
+								
+								String devices="00000000";
+								String command="0011";
+								String ledadd="1000";
+								
+								
+								
 								for (int j = 0; j < jsonArr.size(); j++) {
-									JSONObject jObj=(JSONObject) jsonArr.get(0);
-									logger.debug("/nodeName",jObj.get("nodeName"));
-									logger.debug("/deviceId",jObj.get("deviceId"));
-									logger.debug("/led4",jObj.get("led4"));
-									
-									
-									status.setStatusDesc("downlink for LED4 sent to queue successfully");
-					    			status.setStatusCode(HttpStatus.OK.toString());
-									String resp = JsonUtil.objToJson(status);
-					    			responseEntity = new ResponseEntity<String>(resp,HttpStatus.OK);	
-									
+									JSONObject jObj=(JSONObject) jsonArr.get(j);
+									   logger.debug("/deviceId printing=",jObj.get("deviceId").toString());
+										
+										
+										if(!jObj.get("deviceId").toString().isEmpty() && jObj.get("deviceId").toString()!=null){
+											
+											if(jObj.get("deviceId").toString().equalsIgnoreCase("000")){
+												devices=devices.substring(0, 7)+"1";
+											}else if(jObj.get("deviceId").toString().equalsIgnoreCase("001")){
+												 logger.debug("/inside deviceId as ",devices);
+												devices=devices.substring(0, 6)+"1"+devices.substring(7);
+											}else if(jObj.get("deviceId").toString().equalsIgnoreCase("002")){
+												devices=devices.substring(0, 5)+"1"+devices.substring(6);
+											}else if(jObj.get("deviceId").toString().equalsIgnoreCase("003")){
+												devices=devices.substring(0, 4)+"1"+devices.substring(5);
+											}else if(jObj.get("deviceId").toString().equalsIgnoreCase("004")){
+												devices=devices.substring(0, 3)+"1"+devices.substring(4);
+											}else if(jObj.get("deviceId").toString().equalsIgnoreCase("005")){
+												devices=devices.substring(0, 2)+"1"+devices.substring(3);
+											}else if(jObj.get("deviceId").toString().equalsIgnoreCase("006")){
+												devices=devices.substring(0, 1)+"1"+devices.substring(2);
+											}else if(jObj.get("deviceId").toString().equalsIgnoreCase("007")){
+												devices="1"+devices.substring(1);
+											}
+										}else{
+											status.setStatusDesc("deviceId is null or empty");
+							    			status.setStatusCode(HttpStatus.BAD_REQUEST.toString());
+											String resp = JsonUtil.objToJson(status);
+											logger.debug("led controlling JSON body ",resp);
+							    			return new ResponseEntity<String>(resp,HttpStatus.BAD_REQUEST);
+										}
+										
+										logger.debug("Downlink as devices "+devices);
 								}
+								
+								
+								logger.debug("Downlink as command "+command);
+								
+								String value=json.get("led4").toString();
+								if(value==null){
+									status.setStatusDesc("brightness value for led4 is null or empty");
+					    			status.setStatusCode(HttpStatus.BAD_REQUEST.toString());
+									String resp = JsonUtil.objToJson(status);
+									logger.debug("led controlling JSON body ",resp);
+					    			return new ResponseEntity<String>(resp,HttpStatus.BAD_REQUEST);
+								}
+								
+																
+								String downlinkData=devices+command+ledadd+value;
+								
+								logger.debug("downlinkData resultant"+downlinkData);
+								logger.debug("Base64 resultant",Base64.encodeBase64String(downlinkData.getBytes()));
+								
+								//Base64.encodeBase64(downlinkData.getBytes());
+								
+								String devEUI=json.get("devEUI").toString();
+										logger.debug("devEUI for downlink"+command);
+										if(null==devEUI){
+											status.setStatusDesc("devEUI is null or empty");
+							    			status.setStatusCode(HttpStatus.BAD_REQUEST.toString());
+											String resp = JsonUtil.objToJson(status);
+											logger.debug("led controlling JSON body ",resp);
+							    			return new ResponseEntity<String>(resp,HttpStatus.BAD_REQUEST);
+										}		
+								
+								JSONObject jsonObj=null;
+				    				jsonObj=new JSONObject();
+				    				jsonObj.put("confirmed",true);
+				    				jsonObj.put("data",Base64.encodeBase64String(downlinkData.getBytes()));
+				    				jsonObj.put("devEUI",devEUI);
+				    				jsonObj.put("fPort",2);
+				    				jsonObj.put("reference","BLE-NODE");
+				    	
+			    				
+				    				String jsonData=jsonObj.toString(); 
+			    			
+										
+										String url="https://139.59.84.50:8080/api/nodes/"+devEUI+"/queue";
+					    				logger.debug("URLConn",url);
+					    				
+					    				URL obj1 = new URL(url);
+					    				HttpURLConnection con = (HttpURLConnection) obj1.openConnection();
+					    				con.setDoOutput(true);
+					    				con.setRequestMethod("POST");
+					    				con.setRequestProperty("accept", "application/json");
+					    				con.setRequestProperty("Content-Type", "application/json");
+					    				con.setRequestProperty("Grpc-Metadata-Authorization",jwt);
+					    				
+					    				OutputStream os = con.getOutputStream();
+					    		        os.write(jsonData.getBytes());
+					    		        os.flush();
+					    		        os.close();
+					    		        
+					    				int responseCode = con.getResponseCode();
+					    					logger.debug("POST Response Code :: " + responseCode);
+					    						logger.debug("POST Response message :: " + con.getResponseMessage());
+					    				
+					    				if(responseCode == HttpURLConnection.HTTP_OK) {
+					    					status.setStatusDesc("downlink for LED4 sent to queue successfully");
+							    			status.setStatusCode(HttpStatus.OK.toString());
+											String resp = JsonUtil.objToJson(status);
+											logger.debug("led controlling JSON body ",resp);
+							    			responseEntity = new ResponseEntity<String>(resp,HttpStatus.OK);	
+					    				}else{
+					    					status.setStatusDesc("downlink for LED4 failed");
+							    			status.setStatusCode(HttpStatus.NOT_ACCEPTABLE.toString());
+											String resp = JsonUtil.objToJson(status);
+											logger.debug("led controlling JSON body ",resp);
+							    			responseEntity = new ResponseEntity<String>(resp,HttpStatus.NOT_ACCEPTABLE);
+					    				}
+									
+									
+									
+									
+								
 							}else{
 								status.setStatusDesc("further devices json array is null/0");
 				    			status.setStatusCode(HttpStatus.BAD_REQUEST.toString());
 								String resp = JsonUtil.objToJson(status);
+								logger.debug("led controlling JSON body ",resp);
 				    			responseEntity = new ResponseEntity<String>(resp,HttpStatus.BAD_REQUEST);
 							}
 					
@@ -1356,6 +1618,7 @@ public class ConsumerInstrumentController {
 					status.setStatusDesc("devices of jsonarray is null/0");
 	    			status.setStatusCode(HttpStatus.EXPECTATION_FAILED.toString());
 					String resp = JsonUtil.objToJson(status);
+					logger.debug("led controlling JSON body ",resp);
 	    			responseEntity = new ResponseEntity<String>(resp,HttpStatus.EXPECTATION_FAILED);
 				}
     		    					
@@ -1363,24 +1626,25 @@ public class ConsumerInstrumentController {
     			status.setStatusDesc("Jwt token is empty");
     			status.setStatusCode(HttpStatus.NOT_ACCEPTABLE.toString());
 				String resp = JsonUtil.objToJson(status);
+				logger.debug("led controlling JSON body ",resp);
     			responseEntity = new ResponseEntity<String>(resp,HttpStatus.NOT_ACCEPTABLE);
     		}
 		}else{
 			status.setStatusDesc("devices in request body is null");
 			status.setStatusCode(HttpStatus.EXPECTATION_FAILED.toString());
 			String resp = JsonUtil.objToJson(status);
+			logger.debug("led controlling JSON body ",resp);
 			responseEntity = new ResponseEntity<String>(resp,HttpStatus.EXPECTATION_FAILED);
 		}	 		  				   				
 			
 		}catch(Exception e){
 			logger.error("IN contoller catch block /setDownlinkOnLED4",e);
+			e.printStackTrace();
 			responseEntity = new ResponseEntity<String>(e.toString(), HttpStatus.BAD_REQUEST);
 		}
 		return responseEntity;
 	}
-	
-	
-	
+
 
 	
 	

@@ -14,10 +14,10 @@ public class test4 {
         //byte[] encoded=json.get("json").getBytes();
         //byte[] b=da.getBytes(Charset.forName(da));
 		
-		String v="vikky";
-		System.out.println("hiiiiii==="+v.substring(2));
-		
-		String value=Base64.encodeBase64String(v.getBytes()).toString();
+		String v="1001100000010001";
+			
+		String value=Base64.encodeBase64String(v.getBytes());
+		System.out.println("hiiiiii==="+value);
 		
 		String v1=v.substring(0,3);
 		System.out.println("hiiiiii"+value);
@@ -76,13 +76,13 @@ public class test4 {
             System.out.println( bb.getInt());*/
     		
 		 //int b=(int) Integer.toUnsignedLong((int)decoded[10]);
-		 String b=String.format("%x", decoded[10]);
+		// String b=String.format("%x", decoded[10]);
 		 //int p1=Integer.valueOf(b);
-		 System.out.println("Pppppp  " +b);
+		 //System.out.println("Pppppp  " +b);
 		// n=Integer.parseInt(hex);
 		//long h=(long) (decoded[10] & 0x00000000ffffffffL);
-		 System.out.println("nnnn " +Integer.toHexString(decoded[10]));
-		 System.out.println(b);
+		// System.out.println("nnnn " +Integer.toHexString(decoded[10]));
+		// System.out.println(b);
 		 int w=112;
 		// Integer.toBinaryString(w)
 		 System.out.println("dfdfdfdf"+Integer.toBinaryString(w));

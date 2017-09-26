@@ -119,6 +119,7 @@
           <ul class="treeview-menu">
                 <li><a href="#"><i class="fa fa-circle-o"></i> <b>Users</b></a></li>
                 <li><a href="frameInfos"><i class="fa fa-circle-o"></i> <b>Frames</b></a></li>
+                 <li><a href="downlinkQueue"><i class="fa fa-circle-o"></i> <b>Downlink Queue</b></a></li>
           </ul>
           
           

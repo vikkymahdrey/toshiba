@@ -5,7 +5,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.team.app.dao.DownlinkQueueDao;
 import com.team.app.dao.FrameDao;
+import com.team.app.domain.DownlinkQueue;
 import com.team.app.domain.LoraFrame;
 import com.team.app.logger.AtLogger;
 import com.team.app.service.MqttFramesService;
@@ -14,9 +16,12 @@ import com.team.app.service.MqttFramesService;
 public class MqttFramesServiceImpl implements MqttFramesService {
 
 	private static final AtLogger logger = AtLogger.getLogger(MqttFramesServiceImpl.class);
+	
 	@Autowired
 	private FrameDao frmaeDao;
-
+	
+	@Autowired
+	private DownlinkQueueDao  downlinkQueueDao;
 	
 	public void updateFrame(LoraFrame frame) throws Exception {
 		logger.debug("inside MqttFramesServiceImpl save frame");
@@ -48,6 +53,27 @@ public class MqttFramesServiceImpl implements MqttFramesService {
 
 	public List<LoraFrame> getFrameByDevId(String deviceId,String nodeName) throws Exception {
 		return frmaeDao.getFrameByDevId(deviceId,nodeName);
+	}
+
+
+
+	
+	public void saveDownlink(DownlinkQueue q) throws Exception {
+		downlinkQueueDao.save(q);
+		
+	}
+
+
+
+	public List<DownlinkQueue> getDownlinkQueue() throws Exception {
+		return downlinkQueueDao.getDownlinkQueue();
+	}
+
+
+
+	public void deleteDownlinkQuere() throws Exception {
+		downlinkQueueDao.deleteAll();
+		
 	}
 
 
