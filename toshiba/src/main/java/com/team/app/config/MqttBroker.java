@@ -30,7 +30,6 @@ public class MqttBroker implements MqttCallback,MqttIntrf {
 	private FrameDao frameDao;
 	
 	
-	
 	MqttClient client;
 	
 	MqttMessage message;
@@ -59,9 +58,8 @@ public class MqttBroker implements MqttCallback,MqttIntrf {
 	        e.printStackTrace();
 	    }
 	    
-	    
 	    try {
-	    	logger.debug("/** INside MQTT Broker 4786e6ed00490044 **/");
+	    	logger.debug("/ INside MQTT Broker 	4786e6ed00490062 ");
 	    	MqttConnectOptions connOpts = new MqttConnectOptions();
 	        connOpts.setUserName("loragw");
 	        connOpts.setPassword("loragw".toCharArray());
@@ -70,16 +68,143 @@ public class MqttBroker implements MqttCallback,MqttIntrf {
 	        
 	        client.connect(connOpts);
 	        client.setCallback(this);
-	        client.subscribe("application/1/node/4786e6ed00490044/rx");
+	        client.subscribe("application/1/node/4786e6ed00490062/rx");
 	        MqttMessage message = new MqttMessage();
 	        message.setPayload("sending......."
 	                .getBytes());
-	        client.publish("application/1/node/4786e6ed00490044/tx", message);
+	        client.publish("application/1/node/4786e6ed00490062/tx", message);
 	        System.out.println("Message printing here "+message);
 	        //System.exit(0);
 	    } catch (MqttException e) {
 	        e.printStackTrace();
 	    }
+	    try {
+	    	logger.debug("/ INside MQTT Broker 4786e6ed00490042 ");
+	    	MqttConnectOptions connOpts = new MqttConnectOptions();
+	        connOpts.setUserName("loragw");
+	        connOpts.setPassword("loragw".toCharArray());
+	        connOpts.setCleanSession(true);
+	        client = new MqttClient("tcp://139.59.84.50:1883", MqttClient.generateClientId());
+	        
+	        client.connect(connOpts);
+	        client.setCallback(this);
+	        client.subscribe("application/1/node/4786e6ed00490042/rx");
+	        MqttMessage message = new MqttMessage();
+	        message.setPayload("sending......."
+	                .getBytes());
+	        client.publish("application/1/node/4786e6ed00490042/tx", message);
+	        System.out.println("Message printing here "+message);
+	        //System.exit(0);
+	    } catch (MqttException e) {
+	        e.printStackTrace();
+	    }
+	    try {
+	    	logger.debug("/ INside MQTT Broker 4786e6ed00490052 ");
+	    	MqttConnectOptions connOpts = new MqttConnectOptions();
+	        connOpts.setUserName("loragw");
+	        connOpts.setPassword("loragw".toCharArray());
+	        connOpts.setCleanSession(true);
+	        client = new MqttClient("tcp://139.59.84.50:1883", MqttClient.generateClientId());
+	        
+	        client.connect(connOpts);
+	        client.setCallback(this);
+	        client.subscribe("application/1/node/4786e6ed00490052/rx");
+	        MqttMessage message = new MqttMessage();
+	        message.setPayload("sending......."
+	                .getBytes());
+	        client.publish("application/1/node/4786e6ed00490052/tx", message);
+	        System.out.println("Message printing here "+message);
+	        //System.exit(0);
+	    } catch (MqttException e) {
+	        e.printStackTrace();
+	    }
+	    
+	    try {
+	    	logger.debug("/ INside MQTT Broker 4786e6ed00490070 ");
+	    	MqttConnectOptions connOpts = new MqttConnectOptions();
+	        connOpts.setUserName("loragw");
+	        connOpts.setPassword("loragw".toCharArray());
+	        connOpts.setCleanSession(true);
+	        client = new MqttClient("tcp://139.59.84.50:1883", MqttClient.generateClientId());
+	        
+	        client.connect(connOpts);
+	        client.setCallback(this);
+	        client.subscribe("application/1/node/4786e6ed00490070/rx");
+	        MqttMessage message = new MqttMessage();
+	        message.setPayload("sending......."
+	                .getBytes());
+	        client.publish("application/1/node/4786e6ed00490070/tx", message);
+	        System.out.println("Message printing here "+message);
+	        //System.exit(0);
+	    } catch (MqttException e) {
+	        e.printStackTrace();
+	    }
+	    
+	    try {
+	    	logger.debug("/ INside MQTT Broker 4786e6ed00490073 ");
+	    	MqttConnectOptions connOpts = new MqttConnectOptions();
+	        connOpts.setUserName("loragw");
+	        connOpts.setPassword("loragw".toCharArray());
+	        connOpts.setCleanSession(true);
+	        client = new MqttClient("tcp://139.59.84.50:1883", MqttClient.generateClientId());
+	        
+	        client.connect(connOpts);
+	        client.setCallback(this);
+	        client.subscribe("application/1/node/4786e6ed00490073/rx");
+	        MqttMessage message = new MqttMessage();
+	        message.setPayload("sending......."
+	                .getBytes());
+	        client.publish("application/1/node/4786e6ed00490073/tx", message);
+	        System.out.println("Message printing here "+message);
+	        //System.exit(0);
+	    } catch (MqttException e) {
+	        e.printStackTrace();
+	    }
+	    
+	    try {
+	    	logger.debug("/ INside MQTT Broker 4786e6ed00490077 ");
+	    	MqttConnectOptions connOpts = new MqttConnectOptions();
+	        connOpts.setUserName("loragw");
+	        connOpts.setPassword("loragw".toCharArray());
+	        connOpts.setCleanSession(true);
+	        client = new MqttClient("tcp://139.59.84.50:1883", MqttClient.generateClientId());
+	        
+	        client.connect(connOpts);
+	        client.setCallback(this);
+	        client.subscribe("application/1/node/4786e6ed00490077/rx");
+	        MqttMessage message = new MqttMessage();
+	        message.setPayload("sending......."
+	                .getBytes());
+	        client.publish("application/1/node/4786e6ed00490077/tx", message);
+	        System.out.println("Message printing here "+message);
+	        //System.exit(0);
+	    } catch (MqttException e) {
+	        e.printStackTrace();
+	    }
+	    
+	    try {
+	    	logger.debug("/ INside MQTT Broker 4786e6ed00490090 ");
+	    	MqttConnectOptions connOpts = new MqttConnectOptions();
+	        connOpts.setUserName("loragw");
+	        connOpts.setPassword("loragw".toCharArray());
+	        connOpts.setCleanSession(true);
+	        client = new MqttClient("tcp://139.59.84.50:1883", MqttClient.generateClientId());
+	        
+	        client.connect(connOpts);
+	        client.setCallback(this);
+	        client.subscribe("application/1/node/4786e6ed00490090/rx");
+	        MqttMessage message = new MqttMessage();
+	        message.setPayload("sending......."
+	                .getBytes());
+	        client.publish("application/1/node/4786e6ed00490090/tx", message);
+	        System.out.println("Message printing here "+message);
+	        //System.exit(0);
+	    } catch (MqttException e) {
+	        e.printStackTrace();
+	    }
+	    
+	    
+	   
 	    
 	   
 	}
@@ -145,11 +270,13 @@ public class MqttBroker implements MqttCallback,MqttIntrf {
 				     		 		 String decodeBinary = Integer.toBinaryString(decoded[0]);
 				     		 		 	logger.debug("decoded[0] binary : ",decodeBinary);
 				     		 		 	
-				     		 		  String led1 = decodeBinary.substring(decodeBinary.length()-2,decodeBinary.length()-1);	
+				     		 		  String led1 = decodeBinary.substring(decodeBinary.length()-1,decodeBinary.length());	
 				     		 		  	logger.debug("led1 : ",led1);
-				     		 		  	
-				     		 		  String led2 = decodeBinary.substring(decodeBinary.length()-1,decodeBinary.length());	
+				     		 		 	
+				     		 		  String led2 = decodeBinary.substring(decodeBinary.length()-2,decodeBinary.length()-1);	
 				     		 		  	logger.debug("led2 : ",led2);
+				     		 		  	
+				     		 		 
 				     		 		 	
 				     		 		 					     		 		 	
 				     		 		  String devLed12 = decodeBinary.substring(0, decodeBinary.length()-2);
@@ -161,31 +288,40 @@ public class MqttBroker implements MqttCallback,MqttIntrf {
 				     		 			
 				     		 		 	
 				     		 		 
-				     		 		 				  	  					
+				     		if(decoded[1]!=0){				  	  					
 				  	  				int led34deci=decoded[1] & 0xFF;	
 				  	  					logger.debug("led34deci : ",led34deci);
 				  	  				
 				  	  				 String led34 = Integer.toBinaryString(led34deci);
 				  	  				 	logger.debug("led34 : ",led34);
 				  	  				 	
-				  	  				 String le3 = led34.substring(0, led34.length()-4);
-				  	  				 	logger.debug("led3 : ",le3);
-				  	  				 		
-				  	  				 String le4 = led34.substring(led34.length()-4, led34.length());	
+				  	  				String le3 = led34.substring(led34.length()-4, led34.length());	
+			  	  				 		logger.debug("led3 : ",le3); 	
+				  	  				 	
+				  	  				 String le4= led34.substring(0, led34.length()-4);
 				  	  				 	logger.debug("led4 : ",le4);
+				  	  				 		
+				  	  				 
 				  	  				 		
 				  	  				int led3=Integer.parseInt(le3,2)*6;
 		     		 		  			logger.debug("dId : ",dId);	
 		     		 		  			
 		     		 		  		int led4=Integer.parseInt(le4,2)*6;
 	     		 		  				logger.debug("dId : ",dId);	
-				  	  				 		
+	     		 		  				
+	     		 		  			frame.setLed3(String.valueOf(led3));
+			  	  					frame.setLed4(String.valueOf(led4));
+				     		}	
+				     		else{
+				     					 		  				
+ 		 		  			frame.setLed3(String.valueOf("0"));
+	  	  					frame.setLed4(String.valueOf("0"));
+				     		}
 				  	  				 	//frame.setDeviceId(String.valueOf(dId));
 	     		 		  			frame.setDeviceId("00"+dId);
 				  	  				 	frame.setLed1(led1);
 					  	  				frame.setLed2(led2);
-				  	  				 	frame.setLed3(String.valueOf(led3));
-				  	  					frame.setLed4(String.valueOf(led4));
+				  	  				 	
 				  	  					
 				  	  					
 				  	  					frame.setTemperature(String.valueOf(decoded[2]));

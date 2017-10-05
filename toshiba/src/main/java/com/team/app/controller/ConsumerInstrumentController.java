@@ -185,6 +185,7 @@ public class ConsumerInstrumentController {
 		return responseEntity;
 	}
 	
+	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "/loginAuth", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<String> loginAuthentication(@RequestBody String received){
 		logger.info("Inside in /loginAuth ");
@@ -286,6 +287,7 @@ public class ConsumerInstrumentController {
     						  }
     						 // httpHeaders=new HttpHeaders();  
     						  //httpHeaders.add(AppConstants.HTTP_HEADER_JWT_TOKEN,jwt);
+    						  //mqttIntrf.doDemo();
     						  dto.setStatusDesc("Successfully login");
     						  dto.setJwt(jwt);
     						  String resp = JsonUtil.objToJson(dto);
@@ -491,7 +493,7 @@ public class ConsumerInstrumentController {
 							 jwt=token.get(0).getJwt();
 						 }
 					 
-    				String url="https://139.59.84.50:8080/api/nodes/4786e6ed00490044/frames?limit=1000000";
+    				String url="https://139.59.84.50:8080/api/nodes/4786e6ed00490042/frames?limit=1000000";
     				logger.debug("URLConn",url);
     				
     				URL obj1 = new URL(url);
@@ -597,7 +599,7 @@ public class ConsumerInstrumentController {
 		try{
 			
 			
-			String url="https://139.59.84.50:8080/api/nodes/4786e6ed00490044/frames?limit=1000";
+			String url="https://139.59.84.50:8080/api/nodes/4786e6ed00490042/frames?limit=1000";
 			logger.debug("URLConn",url);
 			URL obj = new URL(url);
 			HttpURLConnection con = (HttpURLConnection) obj.openConnection();
