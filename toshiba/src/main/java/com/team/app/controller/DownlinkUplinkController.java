@@ -33,7 +33,7 @@ private static final AtLogger logger = AtLogger.getLogger(DownlinkUplinkControll
 		try{
 			logger.debug("In /downlinkQueue");
 			mqttFramesService.deleteDownlinkQuere();
-		String url="https://139.59.84.50:8080/api/nodes/4786e6ed00490042/queue";
+		String url="https://139.59.14.31:8080/api/nodes/4786e6ed00490042/queue";
 		logger.debug("URLConn",url);
 		URL obj = new URL(url);
 		HttpURLConnection con = (HttpURLConnection) obj.openConnection();

@@ -74,7 +74,7 @@ public class ConsumerInstrumentController {
 
 	        public boolean verify(String hostname,
 	                javax.net.ssl.SSLSession sslSession) {
-	            if (hostname.equals("139.59.84.50")) {
+	            if (hostname.equals("139.59.14.31")) {
 	                return true;
 	            }
 	            return false;
@@ -229,7 +229,7 @@ public class ConsumerInstrumentController {
 	    			
 	    			logger.debug("User /loginAuth :",user);
 	    			
-    				String url="https://139.59.84.50:8080/api/internal/login";
+    				String url="https://139.59.14.31:8080/api/internal/login";
     				logger.debug("URLConn",url);
     				
     				URL obj1 = new URL(url);
@@ -378,7 +378,7 @@ public class ConsumerInstrumentController {
 							 jwt=token.get(0).getJwt();
 						 }
 					 
-    				String url="https://139.59.84.50:8080/api/users?limit=100";
+    				String url="https://139.59.14.31:8080/api/users?limit=100";
     				logger.debug("URLConn",url);
     				
     				URL obj1 = new URL(url);
@@ -493,7 +493,7 @@ public class ConsumerInstrumentController {
 							 jwt=token.get(0).getJwt();
 						 }
 					 
-    				String url="https://139.59.84.50:8080/api/nodes/4786e6ed00490042/frames?limit=1000000";
+    				String url="https://139.59.14.31:8080/api/nodes/4786e6ed00490042/frames?limit=1000000";
     				logger.debug("URLConn",url);
     				
     				URL obj1 = new URL(url);
@@ -599,7 +599,7 @@ public class ConsumerInstrumentController {
 		try{
 			
 			
-			String url="https://139.59.84.50:8080/api/nodes/4786e6ed00490042/frames?limit=1000";
+			String url="https://139.59.14.31:8080/api/nodes/4786e6ed00490042/frames?limit=1000";
 			logger.debug("URLConn",url);
 			URL obj = new URL(url);
 			HttpURLConnection con = (HttpURLConnection) obj.openConnection();
@@ -692,9 +692,9 @@ public class ConsumerInstrumentController {
 			logger.debug("JWT TOken",jwt);
 			if( jwt!=null && !jwt.isEmpty()){    					
 				List<LoraFrame> frames=mqttFramesService.getFrameByDeviceId();
-				
+				//logger.debug("List Frames : ",frames.size());
 				if(frames!=null && !frames.isEmpty()){
-				
+					logger.debug("List Frames : ",frames.size());
 					JSONArray arr=null;
 						arr=new JSONArray();
 					JSONObject result=null;
@@ -702,6 +702,7 @@ public class ConsumerInstrumentController {
 					for(LoraFrame f : frames){
 						List<LoraFrame> frmList=mqttFramesService.getFrameByDevId(f.getDeviceId(),f.getNodeName());
 						if(frmList!=null && !frmList.isEmpty()){
+							logger.debug("List BleFrames : ",frmList.size());
 							LoraFrame frm=frmList.get(0);
 							JSONObject json=null;
 								json=new JSONObject();								
@@ -715,7 +716,6 @@ public class ConsumerInstrumentController {
 								json.put("temperature", frm.getTemperature());
 								json.put("nodeName", frm.getNodeName());
 								json.put("devEUI", frm.getDevEUI());
-								//json.put("loraId", frm.getLoraId());
 								json.put("deviceId", frm.getDeviceId());
 								json.put("devAdd", frm.getDeviceId());
 								
@@ -964,7 +964,7 @@ public class ConsumerInstrumentController {
 				    				String jsonData=jsonObj.toString(); 
 			    			
 										
-				    					String url="https://139.59.84.50:8080/api/nodes/"+devEUI+"/queue";
+				    					String url="https://139.59.14.31:8080/api/nodes/"+devEUI+"/queue";
 					    				logger.debug("URLConn",url);
 					    				
 					    				URL obj1 = new URL(url);
@@ -1168,7 +1168,7 @@ public class ConsumerInstrumentController {
 				    				String jsonData=jsonObj.toString(); 
 			    			
 										
-				    					String url="https://139.59.84.50:8080/api/nodes/"+devEUI+"/queue";
+				    					String url="https://139.59.14.31:8080/api/nodes/"+devEUI+"/queue";
 					    				logger.debug("URLConn",url);
 					    				
 					    				URL obj1 = new URL(url);
@@ -1368,7 +1368,7 @@ public class ConsumerInstrumentController {
 				    				String jsonData=jsonObj.toString(); 
 			    			
 										
-										String url="https://139.59.84.50:8080/api/nodes/"+devEUI+"/queue";
+										String url="https://139.59.14.31:8080/api/nodes/"+devEUI+"/queue";
 					    				logger.debug("URLConn",url);
 					    				
 					    				URL obj1 = new URL(url);
@@ -1568,7 +1568,7 @@ public class ConsumerInstrumentController {
 				    				String jsonData=jsonObj.toString(); 
 			    			
 										
-										String url="https://139.59.84.50:8080/api/nodes/"+devEUI+"/queue";
+										String url="https://139.59.14.31:8080/api/nodes/"+devEUI+"/queue";
 					    				logger.debug("URLConn",url);
 					    				
 					    				URL obj1 = new URL(url);
