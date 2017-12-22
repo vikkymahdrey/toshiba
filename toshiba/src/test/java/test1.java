@@ -1,12 +1,16 @@
+import java.util.Date;
+
 public class test1  {
 
-public test1() {
-}
-
-
 public static void main(String[] args) {
-    //new MqttBroker().doDemo();
+    
     System.out.println("/*** In main ***/");
+    
+    Date dt=new Date();
+    long date=new Date(System.currentTimeMillis()).getTime();
+    System.out.println("Date:"+date);
+    
+    
 }
 
 
