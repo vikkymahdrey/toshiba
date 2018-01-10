@@ -1,5 +1,6 @@
 package com.team.app.service;
 
+import java.util.Date;
 import java.util.List;
 
 import com.team.app.domain.DownlinkQueue;
@@ -11,7 +12,7 @@ public interface MqttFramesService {
 
 	List<LoraFrame> getFrames()throws Exception;
 
-	List<LoraFrame> getFramesByLoraIdAndDevId(String loraId, String deviceId)throws Exception;
+	LoraFrame getFramesByLoraIdAndDevId(String loraId, String deviceId)throws Exception;
 
 	List<LoraFrame> getFrameByDeviceId()throws Exception;
 
@@ -22,5 +23,11 @@ public interface MqttFramesService {
 	List<DownlinkQueue> getDownlinkQueue()throws Exception;
 
 	void deleteDownlinkQuere()throws Exception;
+
+	List<Object[]> getFramesByReqDt(Date date, String nodeName, String deviceId)throws Exception;
+
+	List<Object[]> getFramesByBtnDts(Date actDt, Date diff, String nodeName, String deviceId)throws Exception;
+
+	List<LoraFrame> deviceInfoFrames()throws Exception;
 
 }

@@ -6,27 +6,6 @@
 	<persistence-unit name="AppPU" transaction-type="RESOURCE_LOCAL">
 		<provider>org.hibernate.ejb.HibernatePersistence</provider>
 		<non-jta-data-source>java:comp/env/jdbc/AppDB</non-jta-data-source>
-		<class>com.team.app.domain.AdminUser</class>
-		<class>com.team.app.domain.Role</class>
-		<class>com.team.app.domain.TblDeviceInfo</class>
-		<class>com.team.app.domain.TblToshibaKeyConfig</class>
-		<class>com.team.app.domain.TblUserInfo</class>
-		<class>com.team.app.domain.Application</class>
-		<class>com.team.app.domain.ApplicationUser</class>
-		<class>com.team.app.domain.ChannelConfiguration</class>
-		<class>com.team.app.domain.DownlinkQueue</class>
-		<class>com.team.app.domain.ExtraChannel</class>
-		<class>com.team.app.domain.Gateway</class>
-		<class>com.team.app.domain.GatewayN</class>
-		<class>com.team.app.domain.GatewayStat</class>
-		<class>com.team.app.domain.GorpMigration</class>
-		<class>com.team.app.domain.GorpMigrationsN</class>
-		<class>com.team.app.domain.JwtToken</class>
-		<class>com.team.app.domain.Node</class>
-		<class>com.team.app.domain.Organization</class>
-		<class>com.team.app.domain.OrganizationUser</class>
-		<class>com.team.app.domain.User</class>
-		<class>com.team.app.domain.LoraFrame</class>
 		
 
 		<properties>

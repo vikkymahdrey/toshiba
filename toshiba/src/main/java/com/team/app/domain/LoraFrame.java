@@ -48,6 +48,27 @@ public class LoraFrame extends BaseEntityInfo implements Serializable {
 	private String led3;
 
 	private String led4;
+	
+	private String peripheral;
+	private String central;
+
+	
+
+	public String getPeripheral() {
+		return peripheral;
+	}
+
+	public void setPeripheral(String peripheral) {
+		this.peripheral = peripheral;
+	}
+
+	public String getCentral() {
+		return central;
+	}
+
+	public void setCentral(String central) {
+		this.central = central;
+	}
 
 	private String nodeName;
 

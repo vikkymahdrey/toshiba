@@ -48,6 +48,22 @@ public class DateUtil {
 		    return date;
 		  }
 		
+		public static String changeDateFromat(Date sqlFormat) {
+			// System.out.println("Got Here");
+			try {
+				String naturalFormat = "";
+				DateFormat formatter;
+				formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				naturalFormat = formatter.format(sqlFormat);
+
+				// System.out.println("Date" + naturalFormat);
+				return naturalFormat;
+			} catch (Exception e) {
+				// System.out.println("Error" + e);
+				return sqlFormat.toString();
+			}
+		}	
+		
 		public static Date convertLongToDate(long longTime, String format) {
 			Date date = null;
 			try {

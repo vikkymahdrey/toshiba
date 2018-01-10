@@ -202,6 +202,25 @@ public class ConsumerInstrumentServiceImpl implements ConsumerInstrumentService 
 
 
 
+	
+	public List<LoraFrame> getFramesByNodeNameAndID(String deviceId, String nodeName) throws Exception {
+		return frameDao.getFramesByNodeNameAndID(deviceId,nodeName);
+	}
+
+
+
+	public void setUpdateLoraFrames(String deviceId, String nodeName,String central,String peripheral) throws Exception {
+		frameDao.setUpdateLoraFrames(central,peripheral,deviceId,nodeName);
+	}
+
+
+
+	public LoraFrame getNamingPacket(String deviceId, String nodeName) throws Exception {
+			return frameDao.getNamingPacket(deviceId,nodeName);
+	}
+
+
+
 
 
 	

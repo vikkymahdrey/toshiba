@@ -1,5 +1,6 @@
 package com.team.app.service.impl;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +38,7 @@ public class MqttFramesServiceImpl implements MqttFramesService {
 
 
 	
-	public List<LoraFrame> getFramesByLoraIdAndDevId(String loraId, String deviceId) throws Exception {
+	public LoraFrame getFramesByLoraIdAndDevId(String loraId, String deviceId) throws Exception {
 		return frmaeDao.getFramesByLoraIdAndDevId(loraId,deviceId);
 	}
 
@@ -74,6 +75,23 @@ public class MqttFramesServiceImpl implements MqttFramesService {
 	public void deleteDownlinkQuere() throws Exception {
 		downlinkQueueDao.deleteAll();
 		
+	}
+
+
+	public List<Object[]>   getFramesByReqDt(Date actDt, String nodeName, String deviceId) throws Exception {
+		return frmaeDao.getFramesByReqDt(actDt,nodeName,deviceId);
+	}
+
+
+
+	public List<Object[]> getFramesByBtnDts(Date actDt, Date diff, String nodeName, String deviceId) throws Exception {
+		return frmaeDao.getFramesByBtnDts(actDt,diff,nodeName,deviceId);
+	}
+
+
+
+	public List<LoraFrame> deviceInfoFrames() throws Exception {
+		return frmaeDao.deviceInfoFrames();
 	}
 
 
