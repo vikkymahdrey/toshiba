@@ -665,6 +665,7 @@ public class MqttBroker implements MqttCallback,MqttIntrf {
 				     		 			 }	
 				     		 			i++;
 				     		 		   }else if(i==2 || i==8 || i==14 || i==20 || i==26 || i==32 || i==38 || i==44){
+				     		 			   logger.debug("testing value for led34 : ",b);
 				     		 			 String decodeBinary = Integer.toBinaryString(b);
 				     		 			 logger.debug("LED34 Binary Value",decodeBinary);
 				     		 			 if(!firstByte.equals("")){
@@ -673,34 +674,39 @@ public class MqttBroker implements MqttCallback,MqttIntrf {
 				     		 					 merge=String.valueOf(Character.toChars(b));
 				     		 				 }else{
 						     		 			 //int led34=Integer.parseInt(decodeBinary,2);
-						     		 			 logger.debug("LED34 Binary AS i==2 : ",decodeBinary);
-						     		 			 
-						     		 			 if(decodeBinary.equals("0")){
-						     		 				logger.debug("LED34 Binary AS 0 IF condition");
-						     		 				frame.setLed3("0");
-						     		 				frame.setLed4("0");
-						     		 			 }else{
-						     		 				logger.debug("LED34 Binary AS !0 ELSE condition");
-						     		 				 if(decodeBinary.length()<5){
-						     		 					logger.debug("LED34 Binary AS !0 ELSE condition length<4");
-						     		 					frame.setLed3("0");
-						     		 						int led4=Integer.parseInt(decodeBinary,2);
-						     		 					frame.setLed4(String.valueOf(led4));
-						     		 				 }else{
-						     		 					 
-						     		 					logger.debug("LED34 Binary AS !0 ELSE condition length>4"); 
-						     		 					if(!decodeBinary.equalsIgnoreCase("11111111111111111111111111111111")){
-							     		 					String led3=decodeBinary.substring(0, decodeBinary.length()-4);
-							     		 					String led4=decodeBinary.substring(decodeBinary.length()-4);
-							     		 					
-							     		 					frame.setLed3(String.valueOf(Integer.parseInt(led3,2)));
-								     		 				frame.setLed4(String.valueOf(Integer.parseInt(led4,2)));
-						     		 					}else{
-						     		 						frame.setLed3("15");
-								     		 				frame.setLed4("15");
-						     		 					}
-						     		 				 }
-						     		 			 }
+				     		 					 if(decodeBinary.length()>8){
+				     		 						decodeBinary=decodeBinary.substring(decodeBinary.length()-8);
+				     		 					 }
+							     		 			 logger.debug("LED34 Binary AS i==2 : ",decodeBinary);
+							     		 			 
+							     		 			 if(decodeBinary.equals("0")){
+							     		 				logger.debug("LED34 Binary AS 0 IF condition");
+							     		 				frame.setLed3("0");
+							     		 				frame.setLed4("0");
+							     		 			 }else{
+							     		 				logger.debug("LED34 Binary AS !0 ELSE condition");
+							     		 				 if(decodeBinary.length()<5){
+							     		 					logger.debug("LED34 Binary AS !0 ELSE condition length<4");
+							     		 					frame.setLed3("0");
+							     		 						int led4=Integer.parseInt(decodeBinary,2);
+							     		 					frame.setLed4(String.valueOf(led4));
+							     		 				 }else{
+							     		 					 
+							     		 					logger.debug("LED34 Binary AS !0 ELSE condition length>4"); 
+							     		 					if(!decodeBinary.equalsIgnoreCase("11111111111111111111111111111111")){
+								     		 					String led3=decodeBinary.substring(0, decodeBinary.length()-4);
+								     		 					String led4=decodeBinary.substring(decodeBinary.length()-4);
+								     		 					
+								     		 					frame.setLed3(String.valueOf(Integer.parseInt(led3,2)));
+									     		 				frame.setLed4(String.valueOf(Integer.parseInt(led4,2)));
+							     		 					}else{
+							     		 						frame.setLed3("15");
+									     		 				frame.setLed4("15");
+							     		 					}
+							     		 				 }
+							     		 			 }
+							     		 			 
+				     		 					 
 						     		 			 
 						     		 			 
 				     		 				 }
